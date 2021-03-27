@@ -30,6 +30,27 @@ errorcount=`echo "$loglist" | grep -c "ERROR"`
 
 Setelah semua informasi yang diperlukan telah disiapkan, kini saatnya Ryujin menuliskan semua informasi tersebut ke dalam laporan dengan format file csv.
 
+Pertama kita dapat mencari semua username dan mengurutkannya dengan menjalankan perintah:
+```
+userlist=`echo "$loglist" | cut -d '(' -f 2 | cut -d ')' -f 1 | sort | uniq`
+```
+Semua username yang ada akan disimpan dalam userlist, diurutkan, dan tidak ada duplikat.
+Setelah itu, kita dapat menghitung jumlah pesan info dan error untuk masing - masing user dengan mengeksekusi perintah berikut:
+```
+userstat=''
+
+while read line
+do
+	usererrorcount=`echo "$errorlist" | grep "$line" | grep -c "ERROR"`
+	userinfocount=`echo "$infolist" | grep "$line" | grep -c "INFO"`
+
+	currentuserstat=`printf "$line,$userinfocount,$usererrorcount\n"`
+	userstat=`printf "$userstat\n$currentuserstat"`
+done <<< `printf "$userlist"`
+```
+
+Variabel userstat digunakan untuk menyimpan semua username dengan jumlah pesan info dan errornya masing - masing, dan sudah diurutkan berdasarkan usernamenya.
+
 **(d)** Semua informasi yang didapatkan pada poin **b** dituliskan ke dalam file `error_message.csv` dengan header **Error,Count** yang kemudian diikuti oleh daftar pesan error dan jumlah kemunculannya **diurutkan** berdasarkan jumlah kemunculan pesan error dari yang terbanyak.
 
 Contoh:
@@ -74,6 +95,15 @@ printf "$output\n" >> error_message.csv
 ```
 
 **(e)** Semua informasi yang didapatkan pada poin **c** dituliskan ke dalam file `user_statistic.csv` dengan header **Username,INFO,ERROR** **diurutkan** berdasarkan username secara ***ascending***.
+
+Pertama kita membuat file user_statistic.csv dan mengisi baris pertama dengan header Username,INFO,ERROR.
+```
+printf "Username,INFO,ERROR" > user_statistic.csv
+```
+Kemudian kita tambahkan semua username, beserta dengan jumlah info dan errornya masing - masing yang sudah diurutkan berdasarkan usernamenya dengan menjalankan perintah:
+```
+printf "$userstat\n" >> user_statistic.csv
+```
 
 Contoh:
 
