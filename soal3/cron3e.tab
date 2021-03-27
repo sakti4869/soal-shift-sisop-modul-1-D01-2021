@@ -1,0 +1,4 @@
+0 0 1-31/2 * * source soal3c.sh; bunny
+0 0 2-31/2 * * source soal3c.sh; kitten
+0 7 * * 1-5 source soal3d.sh; zipping
+0 18 * * 1-5 source soal3d.sh; unzipping
