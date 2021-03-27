@@ -44,19 +44,19 @@ Karena kita juga harus melakukan hal yang sama untuk kelinci, maka kita buat 2 f
 #! /bin/sh/
 
 function kitten() {
-cd Koleksi
-mkdir $(date "+ Kucing_%d-%m-%Y")
-cd $(date "+ Kucing_%d-%m-%Y")
-wget https://loremflickr.com/320/240/kitten
-cd
+   cd Koleksi
+   mkdir $(date "+ Kucing_%d-%m-%Y")
+   cd $(date "+ Kucing_%d-%m-%Y")
+   wget https://loremflickr.com/320/240/kitten
+   cd
 }
 
 function bunny() {
-cd Koleksi
-mkdir $(date "+ Kelinci_%d-%m-%Y")
-cd $(date "+ Kelinci_%d-%m-%Y")
-wget https://loremflickr.com/320/240/bunny
-cd
+   cd Koleksi
+   mkdir $(date "+ Kelinci_%d-%m-%Y")
+   cd $(date "+ Kelinci_%d-%m-%Y")
+   wget https://loremflickr.com/320/240/bunny
+   cd
 }
 ```
 Untuk mengunduh file kucing, kita bisa memanggil fungsinya menggunakan command ```source``` seperti berikut.
@@ -72,15 +72,63 @@ Maka fungsi akan tereksekusi tiap pukul 00:00, untuk ```bunny``` pada tanggal ga
 
 d. Untuk mengamankan koleksi Foto dari Steven, Kuuhaku memintamu untuk membuat script yang akan memindahkan seluruh folder ke zip yang diberi nama “Koleksi.zip” dan mengunci zip tersebut dengan password berupa tanggal saat ini dengan format "MMDDYYYY" (contoh : “03032003”).
 
-Untuk meng-zip folder ````Koleksi```` menggunakan password berupa ```tanggalbulantahun``` maka kita bisa gunakan command berikut.
+Untuk meng-zip folder ````Koleksi/```` menggunakan password berupa ```tanggalbulantahun``` maka kita bisa gunakan command berikut.
 ```
 $ current=$(date "+%d%m%Y")
 $ zip -P $current -r Koleksi.zip Koleksi/
 ```
 ```-P``` digunakan untuk menambahkan password pada zip, berupa ```current``` yang isinya adalah tanggal hari itu.
-```-r``` digunakan agar proses zip dilakukan secara rekursif, sehingga semua subfolder dalam ```Koleksi/``` bisa masuk ke zip.
-Hasil dari proses adalah "Koleksi.zip" yang berada di direktori ```/home/[username]/```
+```-r``` atau ```--recursive``` digunakan agar proses zip dilakukan secara rekursif, sehingga semua subfolder dalam ```Koleksi/``` bisa masuk ke zip.
+
+Hasil dari proses adalah "Koleksi.zip" yang berada di direktori ```/home/[username]/```. Kode diatas kemudian disimpan ke file ```soal3d.sh```.
+```
+#! /bin/sh/
+
+current=$(date "+%d%m%Y")
+zip -P $current -r Koleksi.zip Koleksi/
+```
 
 e. Karena kuuhaku hanya bertemu Steven pada saat kuliah saja, yaitu setiap hari kecuali sabtu dan minggu, dari jam 7 pagi sampai 6 sore, ia memintamu untuk membuat koleksinya ter-zip saat kuliah saja, selain dari waktu yang disebutkan, ia ingin koleksinya ter-unzip dan tidak ada file zip sama sekali.
 
+Berdasarkan deskripsi diatas, maka pada jam 7 pagi untuk senin sampai jum'at, folder ```Koleksi/``` di-zip, kemudian folder aslinya dihapus. Maka di file ```soal3d.sh```, kita tambahkan fungsi untuk menghapus direktori ```Koleksi/``` setelah proses zip selesai.
+```
+#! /bin/sh/
 
+current=$(date "+%d%m%Y")
+zip -P $current -r Koleksi.zip Koleksi/
+rm -rf Koleksi/
+```
+```rm``` berasal dari kata "remove", adalah perintah yang digunakan untuk menghapus file atau direktori.
+```-r``` digunakan untuk melakukan rekursi, sehingga semua subfolder didalam ```Koleksi/``` juga terhapus.
+```-f``` atau ```--force``` digunakan agar file atau folder dapat terhapus tanpa menimbulkan prompt.
+
+Selanjutnya, berdasarkan deskripsi soal pada pukul 18, hari senin sampai kamis, kita harus meng-unzip "Koleksi.zip" dan kemudian menghapusnya. Berikut adalah perintah untuk meng-unzip dan menghapus zip tersebut.
+```
+$ current=$(date "+%d%m%Y")
+$ unzip -P $current Koleksi.zip
+$ rm -f Koleksi.zip
+```
+```-P``` untuk meng-unzip file dengan password yang tertulis di command line.
+
+Untuk memudahkan otomatisasi proses zip dan unzip, kita buat 2 fungsi seperti berikut.
+```
+#! /bin/sh/
+
+function zipping() {
+   current=$(date "+%d%m%Y")
+   zip -P $current -r Koleksi.zip Koleksi/
+   rm -rf Koleksi/
+}
+
+function unzipping() {
+   current=$(date "+%d%m%Y")
+   unzip -P $current Koleksi.zip
+   rm -f Koleksi.zip
+}
+```
+
+Kemudian kita tambahkan perintah berikut pada crontab supaya proses terjadi otomatis pada pukul 7 dan 18, pada setiap hari senin hingga jum'at.
+```
+0 7 * * 1-5 source soal3d.sh; zipping
+0 18 * * 1-5 source soal3d.sh; unzipping
+```
