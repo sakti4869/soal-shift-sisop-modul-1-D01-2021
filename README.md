@@ -279,7 +279,18 @@ done
 ```
 b. Karena Kuuhaku malas untuk menjalankan script tersebut secara manual, ia juga meminta kalian untuk menjalankan script tersebut sehari sekali pada jam 8 malam untuk tanggal-tanggal tertentu setiap bulan, yaitu dari tanggal 1 tujuh hari sekali (1,8,...), serta dari tanggal 2 empat hari sekali(2,6,...). Supaya lebih rapi, gambar yang telah diunduh beserta log-nya, dipindahkan ke folder dengan nama tanggal unduhnya dengan format "DD-MM-YYYY" (contoh : "13-03-2023").
 
+Memakai kode dari soal3a lalu membuat direktori yang menunjukkan ke nama folder yang dinginkan yaitu tanggal unduh kemudian memindahkan file yang telah didownload ke folder itu
+```
+#!/bin/bash
 
+cd ~/soal-shift-sisop-modul-1-D01-2021/soal3:
+bash ./soal3a.sh
+download_date=$(date +"%d-%m-%Y")
+mkdir "$download_date"
+
+mv ./Koleksi_* "./$download_date/"
+mv ./foto.log "./$download_date/"
+```
 c. Agar kuuhaku tidak bosan dengan gambar anak kucing, ia juga memintamu untuk mengunduh gambar kelinci dari "https://loremflickr.com/320/240/bunny". Kuuhaku memintamu mengunduh gambar kucing dan kelinci secara bergantian (yang pertama bebas. contoh : tanggal 30 kucing > tanggal 31 kelinci > tanggal 1 kucing > ... ). Untuk membedakan folder yang berisi gambar kucing dan gambar kelinci, nama folder diberi awalan "Kucing_" atau "Kelinci_" (contoh : "Kucing_13-03-2023").
 
 Pertama, kita bisa tentukan sebuah direktori untuk menyimpan folder-folder tersebut. Misal, kita bisa buat sebuah direktori di /home/[username] bernama Koleksi.
