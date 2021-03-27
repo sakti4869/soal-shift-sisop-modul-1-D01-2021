@@ -72,5 +72,15 @@ Maka fungsi akan tereksekusi tiap pukul 00:00, untuk ```bunny``` pada tanggal ga
 
 d. Untuk mengamankan koleksi Foto dari Steven, Kuuhaku memintamu untuk membuat script yang akan memindahkan seluruh folder ke zip yang diberi nama “Koleksi.zip” dan mengunci zip tersebut dengan password berupa tanggal saat ini dengan format "MMDDYYYY" (contoh : “03032003”).
 
+Untuk meng-zip folder ````Koleksi```` menggunakan password berupa ```tanggalbulantahun``` maka kita bisa gunakan command berikut.
+```
+$ current=$(date "+%d%m%Y")
+$ zip -P $current -r Koleksi.zip Koleksi/
+```
+```-P``` digunakan untuk menambahkan password pada zip, berupa ```current``` yang isinya adalah tanggal hari itu.
+```-r``` digunakan agar proses zip dilakukan secara rekursif, sehingga semua subfolder dalam ```Koleksi/``` bisa masuk ke zip.
+Hasil dari proses adalah "Koleksi.zip" yang berada di direktori ```/home/[username]/```
+
 e. Karena kuuhaku hanya bertemu Steven pada saat kuliah saja, yaitu setiap hari kecuali sabtu dan minggu, dari jam 7 pagi sampai 6 sore, ia memintamu untuk membuat koleksinya ter-zip saat kuliah saja, selain dari waktu yang disebutkan, ia ingin koleksinya ter-unzip dan tidak ada file zip sama sekali.
+
 
