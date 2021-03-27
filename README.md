@@ -111,11 +111,81 @@ Tiap tahunnya, TokoShiSop mengadakan Rapat Kerja yang membahas bagaimana hasil p
 
 *Cost Price* didapatkan dari pengurangan *Sales* dengan *Profit*. (**Quantity diabaikan**).
 
+Pertama kita simpan semua ID transaksi beserta dengan profit percentagenya masing - masing kemudian kita urutkan dari transaksi yang memiliki profit percentage yang paling besar.
+```
+profitlist=`awk -F '	' 'NR > 1 { print $1, ($21 / ($18 - $21)) * 100 }' Laporan-TokoShiSop.tsv | sort -k 2 -n -r`
+```
+Kemudian kita ambil baris pertama dari variabel profitlist yang berisi ID transaksi dan profit percentage yang paling besar.
+```
+profitline1=`echo "$profitlist" | grep "" -m 1`
+```
+Setelah itu, kita simpan row ID dan profit percentagenya ke dalam variabel rowid dan profitpercent.
+```
+rowid=`echo "$profitline1" | cut -d ' ' -f 1`
+profitpercent=`echo "$profitline1" | cut -d ' ' -f 2`
+```
+
 **b.** Clemong memiliki rencana promosi di Albuquerque menggunakan metode MLM. Oleh karena itu, Clemong membutuhkan daftar **nama *customer* pada transaksi tahun 2017 di Albuquerque**.
+
+Untuk mencari nama - nama customer yang berasal dari kota Albuquerque dan melakukan transaksi pada tahun 2017, kita dapat mengeksekusi perintah:
+```
+namacustomer=`awk -F '	' '/2017/ && NR > 1 && $10 == "Albuquerque" { print $7 }' Laporan-TokoShiSop.tsv | sort | uniq`
+```
+Nama - nama customer yang berasal dari Albuquerque diurutkan, dihapus jika ada duplikatnya, dan disimpan dalam variabel namacustomer.
 
 **c.** TokoShiSop berfokus tiga _segment customer_, antara lain: _Home Office_, _Customer_, dan _Corporate_. Clemong ingin meningkatkan penjualan pada segmen _customer_ yang paling sedikit. Oleh karena itu, Clemong membutuhkan **segment _customer_** dan **jumlah transaksinya yang paling sedikit**.
 
+Untuk mencari semua segmen yang ada, kita dapat menjalankan perintah:
+```
+segmenlist=`awk -F '	' 'NR > 1 { print $8 }' Laporan-TokoShiSop.tsv | sort | uniq`
+```
+
+Setelah itu, untuk mencari segmen yang memiliki jumlah transaksi paling sedikit, kita menjalankan perintah - perintah berikut:
+```
+tipesegmen=""
+totaltransaksi=10000
+
+while read line
+do
+	# Cek total transaksi untuk segmen
+	total=`cat Laporan-TokoShiSop.tsv | grep -c "$line"`
+
+	# Jika total transaksi segmen ini lebih sedikit dari yang sebelumnya, update jumlah transaksi paling sedikit
+	if [ $total -lt $totaltransaksi ]
+	then
+		totaltransaksi=$total
+		tipesegmen=$line # Simpan nama segmennya
+	fi
+done <<< `echo "$segmenlist"`
+```
+Total digunakan untuk menyimpan jumlah transaksi dari tiap segmen. Setelah itu variabel total dibandingkan dengan variabel totaltransaksi untuk mencari jumlah transaksi yang paling sedikit.
+Variabel tipesegmen digunakan untuk menyimpan nama dari segmen dengan jumlah transaksi paling sedikit, dan variabel totaltransaksi digunakan untuk menyimpan jumlah transaksi pada segmen tersebut.
+
 **d.** TokoShiSop membagi wilayah bagian (_region_) penjualan menjadi empat bagian, antara lain: _Central_, _East_, _South_, dan _West_. Manis ingin mencari **wilayah bagian (region) yang memiliki total keuntungan (profit) paling sedikit** dan **total keuntungan wilayah tersebut**.
+
+Pertama kita menyimpan nama setiap region dengan menjalankan perintah:
+```
+listregion=`awk -F '	' 'NR > 1 { print $13 }' Laporan-TokoShiSop.tsv | sort | uniq`
+```
+
+Lalu kita jumlahkan semua profit untuk transaksi pada region tersebut dengan mengeksekusi perintah - perintah berikut:
+```
+regionkeuntungan='' # Untuk menyimpan nama region dengan total profit paling sedikit
+totalkeuntungan=1000000 # Untuk menyimpan total profit yang paling sedikit
+
+while read line
+do
+	# Mencari total profit dari semua transaksi pada suatu region
+	profitregion=`grep "$line" Laporan-TokoShiSop.tsv | awk -F '	' '{totalprofit+=$21} END {print totalprofit}'`
+
+	# Jika profitregion kurang dari totalkeuntungan, perbarui totalkeuntungan dan nama region
+	if [ $profitregion -lt $totalkeuntungan ]
+	then
+		regionkeuntungan="$line"
+		totalkeuntungan="$profitregion"
+	fi
+done <<< `printf "$listregion"`
+```
 
 Agar mudah dibaca oleh Manis, Clemong, dan Steven,
 
@@ -131,4 +201,13 @@ Daftar nama customer di Albuquerque pada tahun 2017 antara lain:
 Tipe segmen customer yang penjualannya paling sedikit adalah *Tipe Segment* dengan *Total Transaksi* transaksi.
 
 Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedikit adalah *Nama Region* dengan total keuntungan *Total Keuntungan (Profit)*
+```
+
+Untuk menyimpan semua informasi yang sudah diperoleh, kita dapat menjalankan perintah - perintah berikut:
+```
+printf "Transaksi terakhir dengan profit percentage terbesar yaitu $rowid dengan persentase $profitpercent%%\n\n" > hasil.txt
+printf "Daftar nama customer di Albuquerque pada tahun 2017 antara lain:\n" >> hasil.txt
+printf "$namacustomer\n" >> hasil.txt
+printf "\nTipe segmen customer yang penjualannya paling sedikit adalah $tipesegmen dengan $totaltransaksi transaksi.\n\n" >> hasil.txt
+printf "Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedikit adalah $namaregion dengan total keuntungan $totalkeuntungan\n" >> hasil.txt
 ```
