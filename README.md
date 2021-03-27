@@ -10,7 +10,21 @@ Ryujin baru saja diterima sebagai IT support di perusahaan Bukapedia. Dia diberi
 
 **(a)** Mengumpulkan informasi dari log aplikasi yang terdapat pada file `syslog.log`. Informasi yang diperlukan antara lain: jenis log (ERROR/INFO), pesan log, dan username pada setiap baris lognya. Karena Ryujin merasa kesulitan jika harus memeriksa satu per satu baris secara manual, dia menggunakan regex untuk mempermudah pekerjaannya. Bantulah Ryujin membuat regex tersebut.
 
+Untuk mendapatkan jenis log, pesan log, dan username pada setiap baris log, kita dapat menjalankan perintah:
+```
+loglist=`cat syslog.log | cut -d ':' -f 4 | cut -d ' ' -f 2-`
+errorlist=`echo "$loglist" | grep "ERROR"`
+infolist=`echo "$loglist" | grep "INFO"`
+```
+
+loglist akan berisi semua log pesan error dan info beserta dengan isi pesan dan usernamenya, errorlist hanya akan berisi semua log pesan error, isi pesan, dan usernamenya, dan infolist hanya akan berisi semua log pesan info, isi pesannya, dan usernamenya.
+
 **(b)** Kemudian, Ryujin harus menampilkan semua pesan error yang muncul beserta jumlah kemunculannya.
+
+Untuk menghitung jumlah pesan error yang ada, kita dapat mengeksekusi perintah:
+```
+errorcount=`echo "$loglist" | grep -c "ERROR"`
+```
 
 **(c)** Ryujin juga harus dapat menampilkan jumlah kemunculan log ERROR dan INFO untuk setiap *user*-nya.
 
@@ -24,6 +38,39 @@ Error,Count
 Permission denied,5
 File not found,3
 Failed to connect to DB,2
+```
+
+Pertama kita membuat file error_message.csv dan mengisi baris pertamanya dengan header Error,Count.
+```
+echo "Error,Count" > error_message.csv
+```
+
+Lalu kita dapat menyimpan semua jenis error yang ada pada errorlist:
+
+```
+errortypes=`echo "$errorlist" | cut -d ' ' -f 2- | cut -d '(' -f 1 | sort | uniq`
+```
+
+Errortypes akan berisi semua jenis error yang ada pada file syslog.log
+Selanjutnya, kita akan menghitung jumlah untuk masing - masing jenis error yang ada dan menambahkannya ke dalam file error_message.csv
+
+```
+errors='' # Untuk menyimpan pesan error dan jumlahnya
+
+while read line
+do
+	# Hitung jumlah error untuk satu jenis error
+	errorcount=`echo "$errorlist" | grep -c "$line"`
+
+	# Tambahkan jenis error beserta jumlahnya ke dalam variabel errors
+	errors=`printf "$errors\n$line,$errorcount"`
+done <<< `printf "$errortypes"`
+
+# Urutkan error berdasarkan jumlahnya dari yang paling banyak dan simpan dalam variabel output
+output=`echo "$errors" | sort -t ',' -k 2 -n -r`
+
+# Tambahkan isi dari variabel output ke dalam file error_message.csv
+printf "$output\n" >> error_message.csv
 ```
 
 **(e)** Semua informasi yang didapatkan pada poin **c** dituliskan ke dalam file `user_statistic.csv` dengan header **Username,INFO,ERROR** **diurutkan** berdasarkan username secara ***ascending***.
