@@ -59,7 +59,16 @@ wget https://loremflickr.com/320/240/bunny
 cd
 }
 ```
-Lalu untuk mengotomatiskan pengunduhan file, kita bisa masukkan
+Untuk mengunduh file kucing, kita bisa memanggil fungsinya menggunakan command ```source``` seperti berikut.
+```
+$ source soal3c.sh; kitten
+```
+Kemudian, karena kita harus meng-otomatis-kan pengunduhan file kucing dan kelinci dengan hari yang berselang-seling, maka kita tambahkan perintah berikut ini ke crontab.
+```
+0 0 1-31/2 * * source soal3c.sh; bunny
+0 0 2-31/2 * * source soal3c.sh; kitten
+```
+Maka fungsi akan tereksekusi tiap pukul 00:00, untuk ```bunny``` pada tanggal ganjil, dan untuk ```kitten``` pada tanggal genap.
 
 d. Untuk mengamankan koleksi Foto dari Steven, Kuuhaku memintamu untuk membuat script yang akan memindahkan seluruh folder ke zip yang diberi nama “Koleksi.zip” dan mengunci zip tersebut dengan password berupa tanggal saat ini dengan format "MMDDYYYY" (contoh : “03032003”).
 
