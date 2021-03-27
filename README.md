@@ -216,6 +216,72 @@ printf "\nTipe segmen customer yang penjualannya paling sedikit adalah $tipesegm
 printf "Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedikit adalah $namaregion dengan total keuntungan $totalkeuntungan\n" >> hasil.txt
 ```
 =======
+## Soal 3
+Kuuhaku adalah orang yang sangat suka mengoleksi foto-foto digital, namun Kuuhaku juga merupakan seorang yang pemalas sehingga ia tidak ingin repot-repot mencari foto, selain itu ia juga seorang pemalu, sehingga ia tidak ingin ada orang yang melihat koleksinya tersebut, sayangnya ia memiliki teman bernama Steven yang memiliki rasa kepo yang luar biasa. Kuuhaku pun memiliki ide agar Steven tidak bisa melihat koleksinya, serta untuk mempermudah hidupnya, yaitu dengan meminta bantuan kalian. Idenya adalah :
+
+a. Membuat script untuk mengunduh 23 gambar dari "https://loremflickr.com/320/240/kitten" serta menyimpan log-nya ke file "Foto.log". Karena gambar yang diunduh acak, ada kemungkinan gambar yang sama terunduh lebih dari sekali, oleh karena itu kalian harus menghapus gambar yang sama (tidak perlu mengunduh gambar lagi untuk menggantinya). Kemudian menyimpan gambar-gambar tersebut dengan nama "Koleksi_XX" dengan nomor yang berurutan tanpa ada nomor yang hilang (contoh : Koleksi_01, Koleksi_02, ...)
+
+Pertama kita buat nama file gambar yang akan didownload dan buat file Foto.log yang kosong
+ ```
+nokoleksi=1 
+printf "" > Foto.log 
+``` 
+Buat loop for berisi 23 iterasi ,yang didalamnya kita akan mendownload file foto lalu menyimpan infonya di Foto.log
+``` 
+for i in {1..23}
+do
+    wget "https://loremflickr.com/320/240/kitten" -O download -a Foto.log 
+``` 
+Kalau file yang pertama kali didownload tidak perlu di cek dan segera di download dan direname
+``` 
+    if [ $i -eq 1 ] 
+    then
+        mv download `printf "Koleksi_%02d" "$nokoleksi"` 
+        nokoleksi=$(($nokoleksi+1)) 
+    fi
+``` 
+Berikut adalah cara untuk menghilangkan kemungkinan file yang sama akan didownload. Dengan menggunakan loop for yang didalamnya loop if yang mengecek apakah sama atau tidak dengan memakai value fileissame.
+``` 
+    fileissame=0
+ 
+    for((j=1;j<nokoleksi;j=j+1)) 
+    do
+        if [ $i -eq 1 ]
+        then
+            break 
+        fi
+ 
+        filename=`printf "Koleksi_%02d" "$j"` 
+ 
+        same=`cmp $filename download -b` 
+        if [ -z "$same" ] 
+        then
+            fileissame=1 
+            break
+        else
+            fileissame=0 
+        fi
+    done
+   ``` 
+Dan terakhir jika sudah dicek sama atau tidak memakai loop if berikut kita akan mengecek apakah file nya yang pertama atau file dengan nama yang sama kalau tidak maka akan diberi nama sesuai dengan perintah yaitu Koleksi_XX
+``` 
+    if [ $i -gt 1 ] 
+    then
+        if [ $fileissame -eq 1 ] 
+        then
+            rm download 
+        else
+            mv download `printf "Koleksi_%02d" "$nokoleksi"` 
+            nokoleksi=$(($nokoleksi+1)) 
+        fi
+    fi
+done
+```
+b. Karena Kuuhaku malas untuk menjalankan script tersebut secara manual, ia juga meminta kalian untuk menjalankan script tersebut sehari sekali pada jam 8 malam untuk tanggal-tanggal tertentu setiap bulan, yaitu dari tanggal 1 tujuh hari sekali (1,8,...), serta dari tanggal 2 empat hari sekali(2,6,...). Supaya lebih rapi, gambar yang telah diunduh beserta log-nya, dipindahkan ke folder dengan nama tanggal unduhnya dengan format "DD-MM-YYYY" (contoh : "13-03-2023").
+
+
+c. Agar kuuhaku tidak bosan dengan gambar anak kucing, ia juga memintamu untuk mengunduh gambar kelinci dari "https://loremflickr.com/320/240/bunny". Kuuhaku memintamu mengunduh gambar kucing dan kelinci secara bergantian (yang pertama bebas. contoh : tanggal 30 kucing > tanggal 31 kelinci > tanggal 1 kucing > ... ). Untuk membedakan folder yang berisi gambar kucing dan gambar kelinci, nama folder diberi awalan "Kucing_" atau "Kelinci_" (contoh : "Kucing_13-03-2023").
+
 Pertama, kita bisa tentukan sebuah direktori untuk menyimpan folder-folder tersebut. Misal, kita bisa buat sebuah direktori di /home/[username] bernama Koleksi.
 ```
 $ mkdir Koleksi
