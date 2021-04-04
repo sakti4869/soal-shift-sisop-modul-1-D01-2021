@@ -1,14 +1,14 @@
 # soal-shift-sisop-modul-1-D01-2021
-- Daftar Isi
-   - Anggota Kelompok
-   - Soal 1
-   - Soal 2
-   - Soal 3
-      - 3a
-      - 3b
-      - 3c
-      - 3d
-      - 3e
+- [Daftar Isi]
+   - [Anggota Kelompok]
+   - [Soal 1] (#soal_1)
+   - [Soal 2]
+   - [Soal 3]
+      - [3a]
+      - [3b]
+      - [3c]
+      - [3d]
+      - [3e]
 
 Khaela Fortunela 05111940000057
 
@@ -16,7 +16,7 @@ M Haikal Aria Sakti 05111940000088
 
 David Ralphwaldo M 05111940000190
 
-## Soal 1
+## Soal 1 ##
 Ryujin baru saja diterima sebagai IT support di perusahaan Bukapedia. Dia diberikan tugas untuk membuat laporan harian untuk aplikasi internal perusahaan, *ticky*. Terdapat 2 laporan yang harus dia buat, yaitu laporan **daftar peringkat pesan error** terbanyak yang dibuat oleh *ticky* dan laporan **penggunaan user** pada aplikasi *ticky*. Untuk membuat laporan tersebut, Ryujin harus melakukan beberapa hal berikut:
 
 **(a)** Mengumpulkan informasi dari log aplikasi yang terdapat pada file `syslog.log`. Informasi yang diperlukan antara lain: jenis log (ERROR/INFO), pesan log, dan username pada setiap baris lognya. Karena Ryujin merasa kesulitan jika harus memeriksa satu per satu baris secara manual, dia menggunakan regex untuk mempermudah pekerjaannya. Bantulah Ryujin membuat regex tersebut.
