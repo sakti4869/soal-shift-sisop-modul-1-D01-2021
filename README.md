@@ -35,31 +35,60 @@ Ryujin baru saja diterima sebagai IT support di perusahaan Bukapedia. Dia diberi
 
 ![Soal1a](https://i.postimg.cc/VLqPP5dB/1-a.png)
 
-Untuk mendapatkan jenis log, pesan log, dan username pada setiap baris log, kita dapat menjalankan perintah:
+### Cara Pengerjaan ###
 
-loglist akan berisi semua log pesan error dan info beserta dengan isi pesan dan usernamenya, errorlist hanya akan berisi semua log pesan error, isi pesan, dan usernamenya, dan infolist hanya akan berisi semua log pesan info, isi pesannya, dan usernamenya.
+1. Menggunakan cut dengan delimiter ':' untuk mendapatkan jenis pesan, isi pesan, dan username. Hasilnya kemudian dicut lagi dengan delimiter ' ' (spasi) untuk menghilangkan spasi di awal pesan. Hasilnya kemudian disimpan di variabel loglist.
+2. Menggunakan grep untuk mencari semua pesan error yang disimpan di loglist kemudian hasilnya disimpan di variabel errorlist.
+3. Menggunakan grep untuk mencari semua pesan info yang disimpan di loglist kemudian hasilnya disimpan di variabel infolist.
+
+### Kendala ###
+
+Tidak ada kendala.
 
 **(b)** Kemudian, Ryujin harus menampilkan semua pesan error yang muncul beserta jumlah kemunculannya.
 
 ![Soal1b](https://i.postimg.cc/255sWwT2/1-b.png)
 
-Untuk menghitung jumlah pesan error yang ada, kita dapat mengeksekusi perintah:
+### Cara pengerjaan ###
 
-Errortypes akan menyimpan semua jenis error yang terdapat pada file syslog.log. Kemudian jenis - jenis error tersebut akan diurutkan dan kemudian perintah uniq akan menghapus semua duplikat jenis error yang ada.
+1. Isi variabel errorlist dicut dengan menggunakan delimiter ' ' (spasi) dari field kedua sampai terakhir untuk mendapatkan jenis errornya. Kemudian hasilnya dicut lagi dengan delimiter '(' (buka kurung) dan diambil field pertamanya untuk menghilangkan nama usernamenya. Lalu hasilnya disort kemudian dihilangkan duplikatnya dengan menggunakan perintah uniq. Hasilnya disimpan di variabel errortypes.
+2. Membaca isi dari variabel errortypes kemudian menghitung jumlah tiap jenis error. Kemudian hasilnya diappend ke variabel errors untuk nanti diurutkan.
+3. Isi dari variabel errors diurutkan berdasarkan jumlah errornya untuk nanti dioutput ke file error_message.csv
 
-Setelah itu, kita menghitung jumlah error untuk setiap jenis error yang ada dan jumlahnya disimpan dalam variabel errorcount. Kemudian kita akan menyimpan pesan error beserta dengan jumlahnya ke dalam variabel errors. Variabel errors kemudian diurutkan sesuai dengan jumlah error masing - masing jenis error mulai dari jumlah error yang paling banyak.
+### Kendala ###
+
+Awalnya kami menggunakan:
+```
+	printf "$errortypes" | while read line
+	do
+		...
+	done
+```
+Tetapi ternyata isi variabel errors hilang setelah loop selesai. Jadi kami mengubahnya menjadi:
+```
+	while read line
+	do
+		...
+	done <<< `printf "$errortypes"`
+```
 
 **(c)** Ryujin juga harus dapat menampilkan jumlah kemunculan log ERROR dan INFO untuk setiap *user*-nya.
 
 ![Soal1c](https://i.postimg.cc/PqFBQwRh/1-c.png)
 
+### Cara pengerjaan ###
+
+1. Melakukan cut pada variabel loglist dengan delimiter '(' dan field kedua untuk mendapatkan usernamenya. Hasilnya kemudian dicut dengan delimiter ')' dan field pertama untuk menghilangkan ')' (tutup kurung) setelah username. Kemudian hasilnya diurutkan dan dihilangkan duplikatnya.
+2. Mencari jumlah error untuk setiap user dengan mencari nama username pada list error kemudian menghitung jumlah kemunculannya. Hasilnya disimpan di variabel usererrorcount.
+3. Mencari jumlah info untuk setiap user dengan mencari nama username pada list info kemudian menghitung jumlah kemunculannya. Hasilnya disimpan di variabel userinfocount.
+4. Menyimpan username, jumlah info, dan jumlah error ke dalam variabel currentuserstat.
+5. Variabel currentuserstat diappend ke variabel userstat.
+
+### Kendala ###
+
+Sama seperti no 1.B, kami harus mengubah while loopnya.
+
 Setelah semua informasi yang diperlukan telah disiapkan, kini saatnya Ryujin menuliskan semua informasi tersebut ke dalam laporan dengan format file csv.
-
-Pertama kita dapat mencari semua username dan mengurutkannya dengan menjalankan perintah:
-Semua username yang ada akan disimpan dalam userlist, diurutkan, dan tidak ada duplikat.
-Setelah itu, kita dapat menghitung jumlah pesan info dan error untuk masing - masing user dengan mengeksekusi perintah berikut:
-
-Variabel userstat digunakan untuk menyimpan semua username dengan jumlah pesan info dan errornya masing - masing, dan sudah diurutkan berdasarkan usernamenya.
 
 **(d)** Semua informasi yang didapatkan pada poin **b** dituliskan ke dalam file `error_message.csv` dengan header **Error,Count** yang kemudian diikuti oleh daftar pesan error dan jumlah kemunculannya **diurutkan** berdasarkan jumlah kemunculan pesan error dari yang terbanyak.
 
@@ -73,7 +102,14 @@ Failed to connect to DB,2
 
 ![Soal1d](https://i.postimg.cc/6pBJWwZs/1-d.png)
 
-Untuk menyimpan jenis - jenis error yang ada beserta dengan jumlah errornya kita dapat mengeksekusi perintah:
+### Cara pengerjaan ###
+
+1. Membuat file error_message.csv dan menuliskan header "Error,Count" ke dalamnya.
+2. Mengappend isi dari variabel errors yang sudah dibuat pada no 1.B ke dalam file error_message.csv
+
+### Kendala ###
+
+Tidak ada kendala.
 
 **(e)** Semua informasi yang didapatkan pada poin **c** dituliskan ke dalam file `user_statistic.csv` dengan header **Username,INFO,ERROR** **diurutkan** berdasarkan username secara ***ascending***.
 
@@ -88,16 +124,15 @@ ryujin.1203,1,3
 
 ![Soal1e](https://i.postimg.cc/13Mx4T08/1-e.png)
 
-Pertama kita membuat file user_statistic.csv dan mengisi baris pertama dengan header Username,INFO,ERROR.
-```
-printf "Username,INFO,ERROR" > user_statistic.csv
-```
-Kemudian kita tambahkan semua username, beserta dengan jumlah info dan errornya masing - masing yang sudah diurutkan berdasarkan usernamenya dengan menjalankan perintah:
-```
-printf "$userstat\n" >> user_statistic.csv
-```
+### Cara pengerjaan ###
+1. Membuat file user_statistic.csv dan mengisi baris pertama dengan header Username,INFO,ERROR.
+2. Mengappend isi dari variabel userstat yang diperoleh pada no 1.C ke dalam file user_statistic.csv.
 
-## Soal 2
+### Kendala ###
+
+Tidak ada kendala.
+
+## Soal 2 ##
 
 Steven dan Manis mendirikan sebuah *startup* bernama “TokoShiSop”. Sedangkan kamu dan Clemong adalah karyawan pertama dari TokoShiSop. Setelah tiga tahun bekerja, Clemong diangkat menjadi manajer penjualan TokoShiSop, sedangkan kamu menjadi kepala gudang yang mengatur keluar masuknya barang.
 
