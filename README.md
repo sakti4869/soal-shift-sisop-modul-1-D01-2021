@@ -10,6 +10,8 @@
       - [3d]
       - [3e]
 
+[SC8.png](https://postimg.cc/wt361Yn3)
+
 ## Anggota Kelompok ##
 
 Khaela Fortunela 05111940000057
