@@ -1,5 +1,5 @@
 # soal-shift-sisop-modul-1-D01-2021 #
-- [Daftar Isi]
+##  Daftar Isi ##
    - [Anggota Kelompok](https://github.com/sakti4869/soal-shift-sisop-modul-1-D01-2021/blob/main/README.md#anggota-kelompok)
    - [Soal 1](https://github.com/sakti4869/soal-shift-sisop-modul-1-D01-2021/blob/main/README.md#soal-1)
       - [1a]
