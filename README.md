@@ -33,56 +33,31 @@ Ryujin baru saja diterima sebagai IT support di perusahaan Bukapedia. Dia diberi
 
 **(a)** Mengumpulkan informasi dari log aplikasi yang terdapat pada file `syslog.log`. Informasi yang diperlukan antara lain: jenis log (ERROR/INFO), pesan log, dan username pada setiap baris lognya. Karena Ryujin merasa kesulitan jika harus memeriksa satu per satu baris secara manual, dia menggunakan regex untuk mempermudah pekerjaannya. Bantulah Ryujin membuat regex tersebut.
 
+![Soal1a](https://i.postimg.cc/VLqPP5dB/1-a.png)
+
 Untuk mendapatkan jenis log, pesan log, dan username pada setiap baris log, kita dapat menjalankan perintah:
-```
-loglist=`cat syslog.log | cut -d ':' -f 4 | cut -d ' ' -f 2-`
-errorlist=`echo "$loglist" | grep "ERROR"`
-infolist=`echo "$loglist" | grep "INFO"`
-```
 
 loglist akan berisi semua log pesan error dan info beserta dengan isi pesan dan usernamenya, errorlist hanya akan berisi semua log pesan error, isi pesan, dan usernamenya, dan infolist hanya akan berisi semua log pesan info, isi pesannya, dan usernamenya.
 
 **(b)** Kemudian, Ryujin harus menampilkan semua pesan error yang muncul beserta jumlah kemunculannya.
 
+![Soal1b](https://i.postimg.cc/255sWwT2/1-b.png)
+
 Untuk menghitung jumlah pesan error yang ada, kita dapat mengeksekusi perintah:
-```
-errortypes=`echo "$errorlist" | cut -d ' ' -f 2- | cut -d '(' -f 1 | sort | uniq`
-errors=''
 
-while read line
-do
-	errorcount=`echo "$errorlist" | grep -c "$line"`
-	errors=`printf "$errors\n$line,$errorcount"`
-done <<< `printf "$errortypes"`
-
-errors=`echo "$errors" | sort -t ',' -k 2 -n -r` # Urutkan error berdasarkan jumlahnya
-```
 Errortypes akan menyimpan semua jenis error yang terdapat pada file syslog.log. Kemudian jenis - jenis error tersebut akan diurutkan dan kemudian perintah uniq akan menghapus semua duplikat jenis error yang ada.
 
 Setelah itu, kita menghitung jumlah error untuk setiap jenis error yang ada dan jumlahnya disimpan dalam variabel errorcount. Kemudian kita akan menyimpan pesan error beserta dengan jumlahnya ke dalam variabel errors. Variabel errors kemudian diurutkan sesuai dengan jumlah error masing - masing jenis error mulai dari jumlah error yang paling banyak.
 
 **(c)** Ryujin juga harus dapat menampilkan jumlah kemunculan log ERROR dan INFO untuk setiap *user*-nya.
 
+![Soal1c](https://i.postimg.cc/PqFBQwRh/1-c.png)
+
 Setelah semua informasi yang diperlukan telah disiapkan, kini saatnya Ryujin menuliskan semua informasi tersebut ke dalam laporan dengan format file csv.
 
 Pertama kita dapat mencari semua username dan mengurutkannya dengan menjalankan perintah:
-```
-userlist=`echo "$loglist" | cut -d '(' -f 2 | cut -d ')' -f 1 | sort | uniq`
-```
 Semua username yang ada akan disimpan dalam userlist, diurutkan, dan tidak ada duplikat.
 Setelah itu, kita dapat menghitung jumlah pesan info dan error untuk masing - masing user dengan mengeksekusi perintah berikut:
-```
-userstat=''
-
-while read line
-do
-	usererrorcount=`echo "$errorlist" | grep "$line" | grep -c "ERROR"`
-	userinfocount=`echo "$infolist" | grep "$line" | grep -c "INFO"`
-
-	currentuserstat=`printf "$line,$userinfocount,$usererrorcount\n"`
-	userstat=`printf "$userstat\n$currentuserstat"`
-done <<< `printf "$userlist"`
-```
 
 Variabel userstat digunakan untuk menyimpan semua username dengan jumlah pesan info dan errornya masing - masing, dan sudah diurutkan berdasarkan usernamenya.
 
@@ -96,11 +71,9 @@ File not found,3
 Failed to connect to DB,2
 ```
 
+![Soal1d](https://i.postimg.cc/6pBJWwZs/1-d.png)
+
 Untuk menyimpan jenis - jenis error yang ada beserta dengan jumlah errornya kita dapat mengeksekusi perintah:
-```
-echo "Error,Count" > error_message.csv # Header dari file error_message.csv
-printf "$errors\n" >> error_message.csv # Semua jenis error dengan jumlahnya masing - masing
-```
 
 **(e)** Semua informasi yang didapatkan pada poin **c** dituliskan ke dalam file `user_statistic.csv` dengan header **Username,INFO,ERROR** **diurutkan** berdasarkan username secara ***ascending***.
 
@@ -112,7 +85,8 @@ kaori02,6,0
 kousei01,2,2
 ryujin.1203,1,3
 ```
-<<<<<<< main
+
+![Soal1e](https://i.postimg.cc/13Mx4T08/1-e.png)
 
 Pertama kita membuat file user_statistic.csv dan mengisi baris pertama dengan header Username,INFO,ERROR.
 ```
@@ -123,8 +97,6 @@ Kemudian kita tambahkan semua username, beserta dengan jumlah info dan errornya 
 printf "$userstat\n" >> user_statistic.csv
 ```
 
-=======
->>>>>>> main
 ## Soal 2
 
 Steven dan Manis mendirikan sebuah *startup* bernama “TokoShiSop”. Sedangkan kamu dan Clemong adalah karyawan pertama dari TokoShiSop. Setelah tiga tahun bekerja, Clemong diangkat menjadi manajer penjualan TokoShiSop, sedangkan kamu menjadi kepala gudang yang mengatur keluar masuknya barang.
@@ -136,6 +108,8 @@ Tiap tahunnya, TokoShiSop mengadakan Rapat Kerja yang membahas bagaimana hasil p
 𝑃𝑟𝑜𝑓𝑖𝑡 𝑃𝑒𝑟𝑐𝑒𝑛𝑡𝑎𝑔𝑒 = (𝑃𝑟𝑜𝑓𝑖𝑡 ÷ 𝐶𝑜𝑠𝑡 𝑃𝑟𝑖𝑐𝑒) × 100
 
 *Cost Price* didapatkan dari pengurangan *Sales* dengan *Profit*. (**Quantity diabaikan**).
+
+![Soal2a](https://i.postimg.cc/J0RcyT5h/2-a.png)
 
 Pertama kita simpan semua ID transaksi beserta dengan profit percentagenya masing - masing kemudian kita urutkan dari transaksi yang memiliki profit percentage yang paling besar.
 ```
@@ -153,6 +127,8 @@ profitpercent=`echo "$profitline1" | cut -d ' ' -f 2`
 
 **b.** Clemong memiliki rencana promosi di Albuquerque menggunakan metode MLM. Oleh karena itu, Clemong membutuhkan daftar **nama *customer* pada transaksi tahun 2017 di Albuquerque**.
 
+![Soal2b](https://i.postimg.cc/5yp58wsS/2-b.png)
+
 Untuk mencari nama - nama customer yang berasal dari kota Albuquerque dan melakukan transaksi pada tahun 2017, kita dapat mengeksekusi perintah:
 ```
 namacustomer=`awk -F '	' '/2017/ && NR > 1 && $10 == "Albuquerque" { print $7 }' Laporan-TokoShiSop.tsv | sort | uniq`
@@ -160,6 +136,8 @@ namacustomer=`awk -F '	' '/2017/ && NR > 1 && $10 == "Albuquerque" { print $7 }'
 Nama - nama customer yang berasal dari Albuquerque diurutkan, dihapus jika ada duplikatnya, dan disimpan dalam variabel namacustomer.
 
 **c.** TokoShiSop berfokus tiga _segment customer_, antara lain: _Home Office_, _Customer_, dan _Corporate_. Clemong ingin meningkatkan penjualan pada segmen _customer_ yang paling sedikit. Oleh karena itu, Clemong membutuhkan **segment _customer_** dan **jumlah transaksinya yang paling sedikit**.
+
+![Soal2c](https://i.postimg.cc/5N7q0SYx/2-c.png)
 
 Untuk mencari semua segmen yang ada, kita dapat menjalankan perintah:
 ```
@@ -187,8 +165,9 @@ done <<< `echo "$segmenlist"`
 Total digunakan untuk menyimpan jumlah transaksi dari tiap segmen. Setelah itu variabel total dibandingkan dengan variabel totaltransaksi untuk mencari jumlah transaksi yang paling sedikit.
 Variabel tipesegmen digunakan untuk menyimpan nama dari segmen dengan jumlah transaksi paling sedikit, dan variabel totaltransaksi digunakan untuk menyimpan jumlah transaksi pada segmen tersebut.
 
-<<<<<<< main
 **d.** TokoShiSop membagi wilayah bagian (_region_) penjualan menjadi empat bagian, antara lain: _Central_, _East_, _South_, dan _West_. Manis ingin mencari **wilayah bagian (region) yang memiliki total keuntungan (profit) paling sedikit** dan **total keuntungan wilayah tersebut**.
+
+![Soal2d](https://i.postimg.cc/FssVNBKW/2-d.png)
 
 Pertama kita menyimpan nama setiap region dengan menjalankan perintah:
 ```
@@ -230,6 +209,8 @@ Tipe segmen customer yang penjualannya paling sedikit adalah *Tipe Segment* deng
 Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedikit adalah *Nama Region* dengan total keuntungan *Total Keuntungan (Profit)*
 ```
 
+![Soal2e](https://i.postimg.cc/tRzz0j9n/2-e.png)
+
 Untuk menyimpan semua informasi yang sudah diperoleh, kita dapat menjalankan perintah - perintah berikut:
 ```
 printf "Transaksi terakhir dengan profit percentage terbesar yaitu $rowid dengan persentase $profitpercent%%\n\n" > hasil.txt
@@ -238,7 +219,7 @@ printf "$namacustomer\n" >> hasil.txt
 printf "\nTipe segmen customer yang penjualannya paling sedikit adalah $tipesegmen dengan $totaltransaksi transaksi.\n\n" >> hasil.txt
 printf "Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedikit adalah $namaregion dengan total keuntungan $totalkeuntungan\n" >> hasil.txt
 ```
-=======
+
 ## Soal 3
 Kuuhaku adalah orang yang sangat suka mengoleksi foto-foto digital, namun Kuuhaku juga merupakan seorang yang pemalas sehingga ia tidak ingin repot-repot mencari foto, selain itu ia juga seorang pemalu, sehingga ia tidak ingin ada orang yang melihat koleksinya tersebut, sayangnya ia memiliki teman bernama Steven yang memiliki rasa kepo yang luar biasa. Kuuhaku pun memiliki ide agar Steven tidak bisa melihat koleksinya, serta untuk mempermudah hidupnya, yaitu dengan meminta bantuan kalian. Idenya adalah :
 
