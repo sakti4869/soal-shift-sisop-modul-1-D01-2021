@@ -391,6 +391,8 @@ function bunny() {
 }
 ```
 
+![Screenshot of soal3c.sh](https://i.postimg.cc/bwm0ZHZy/Screenshot-363.png)
+
 d. Untuk mengamankan koleksi Foto dari Steven, Kuuhaku memintamu untuk membuat script yang akan memindahkan seluruh folder ke zip yang diberi nama “Koleksi.zip” dan mengunci zip tersebut dengan password berupa tanggal saat ini dengan format "MMDDYYYY" (contoh : “03032003”).
 
 Untuk meng-zip folder ````Koleksi/```` menggunakan password berupa ```tanggalbulantahun``` maka kita bisa gunakan command berikut.
