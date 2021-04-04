@@ -1,24 +1,16 @@
 # soal-shift-sisop-modul-1-D01-2021 #
 - [Daftar Isi]
    - [Anggota Kelompok]
-   - [Soal-1] (#soal-1 "Go to soal 1")
-      - [1a]
-      - [1b]
-      - [1c]
-      - [1d]
-      - [1e]
+   - [soal-1] (#soal-1 "Go to soal 1")
    - [Soal 2]
-      - [2a]
-      - [2b]
-      - [2c]
-      - [2d]
-      - [2e]
    - [Soal 3]
       - [3a]
       - [3b]
       - [3c]
       - [3d]
       - [3e]
+
+## Anggota Kelompok ##
 
 Khaela Fortunela 05111940000057
 
@@ -319,6 +311,8 @@ Pertama, kita bisa tentukan sebuah direktori untuk menyimpan folder-folder terse
 $ mkdir Koleksi
 $ cd Koleksi
 ```
+```mkdir``` adalah perintah untuk membuat sebuah direktori atau folder. Format ```mkdir namafolder```.
+```cd``` adalah perintah untuk pergi ke suatu direktori tertentu. Format ```cd namafolder```.
 Kemudian, kita buat direktori untuk foto yang akan diunduh dengan format "Kucing_tanggal-bulan-tahun"
 ```
 $ mkdir $(date "+ Kucing_%d-%m-%Y")
@@ -327,7 +321,9 @@ Selanjutnya, kita masuk ke direktori tersebut dan mendownload foto kucing dari "
 ```
 $ wget https://loremflickr.com/320/240/kitten
 ```
-Kemudian untuk meng-otomatis-kan semua perintah itu, kita taruh di file soal3c.sh.
+```wget``` digunakan untuk mengunduh file dari alamat HTTP, HTTPS, FTP dan FTPS. Format ```wget alamat```.
+
+Kemudian untuk meng-otomatis-kan semua perintah itu, kita taruh semua perintah di file soal3c.sh.
 ```
 #! /bin/sh/
 
@@ -357,7 +353,7 @@ function bunny() {
    cd
 }
 ```
-Untuk mengunduh file kucing, kita bisa memanggil fungsinya menggunakan command ```source``` seperti berikut.
+Untuk mengunduh file kucing, kita bisa memanggil fungsinya menggunakan command ```source``` seperti berikut. Format ```source shellscript; function```.
 ```
 $ source soal3c.sh; kitten
 ```
@@ -367,6 +363,33 @@ Kemudian, karena kita harus meng-otomatis-kan pengunduhan file kucing dan kelinc
 0 0 2-31/2 * * source soal3c.sh; kitten
 ```
 Maka fungsi akan tereksekusi tiap pukul 00:00, untuk ```bunny``` pada tanggal ganjil, dan untuk ```kitten``` pada tanggal genap.
+
+**REVISI**
+Pada implementasi kode diatas file foto tersimpan dengan nama "kitten" untuk foto kucing dan "bunny" untuk foto kelinci. Dan juga, saat dilakukan pengunduhan foto lebih dari satu kali pada tanggal yang sama, file foto akan dinamai kitten.1, kitten.2, dan seterusnya, dan juga tidak bisa dilihat sebagai foto. Untuk memperbaiki hal ini, kita tambahkan perintah penamaan pada file yang diunduh oleh ```wget```. File akan dinamai berdasarkan jenis foto, tanggal dan jam pengunduhan dengan format ```Kucing_tanggal-bulan-tahun_jam:menit:detik```. Berikut adalah skripnya.
+```
+wget -O $(date "+ Kelinci_%d-%m-%Y_%H:%M:%S") https://loremflickr.com/320/240/bunny
+```
+```-O``` atau ```--output-document=FILE```digunakan untuk menyimpan file hasil pengunduhan dengan nama berbeda. Sehingga shell script soal3c.sh menjadi seperti berikut. 
+
+```
+#! /bin/sh/
+
+function kitten() {
+   cd Koleksi
+   mkdir $(date "+ Kucing_%d-%m-%Y")
+   cd $(date "+ Kucing_%d-%m-%Y")
+   wget -O $(date "+ Kucing_%d-%m-%Y_%H:%M:%S") https://loremflickr.com/320/240/kitten
+   cd
+}
+
+function bunny() {
+   cd Koleksi
+   mkdir $(date "+ Kelinci_%d-%m-%Y")
+   cd $(date "+ Kelinci_%d-%m-%Y")
+   wget -O $(date "+ Kelinci_%d-%m-%Y_%H:%M:%S") https://loremflickr.com/320/240/bunny
+   cd
+}
+```
 
 d. Untuk mengamankan koleksi Foto dari Steven, Kuuhaku memintamu untuk membuat script yang akan memindahkan seluruh folder ke zip yang diberi nama “Koleksi.zip” dan mengunci zip tersebut dengan password berupa tanggal saat ini dengan format "MMDDYYYY" (contoh : “03032003”).
 
