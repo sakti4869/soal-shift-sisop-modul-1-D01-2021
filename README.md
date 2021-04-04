@@ -1,4 +1,15 @@
 # soal-shift-sisop-modul-1-D01-2021
+- Daftar Isi
+   - Anggota Kelompok
+   - Soal 1
+   - Soal 2
+   - Soal 3
+      - 3a
+      - 3b
+      - 3c
+      - 3d
+      - 3e
+
 Khaela Fortunela 05111940000057
 
 M Haikal Aria Sakti 05111940000088
