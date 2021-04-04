@@ -4,7 +4,7 @@ function kitten() {
    cd Koleksi
    mkdir $(date "+ Kucing_%d-%m-%Y")
    cd $(date "+ Kucing_%d-%m-%Y")
-   wget -O $(date "+ Kucing_%d-%m-%Y_%H:%M:%S") https://loremflickr.com/320/240/kucing
+   wget -O $(date "+ Kucing_%d-%m-%Y_%H:%M:%S") https://loremflickr.com/320/240/kitten
    cd
 }
 
