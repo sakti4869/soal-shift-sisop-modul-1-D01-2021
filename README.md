@@ -449,5 +449,6 @@ Kemudian kita tambahkan perintah berikut pada crontab supaya proses terjadi otom
 0 7 * * 1-5 source soal3d.sh; zipping
 0 18 * * 1-5 source soal3d.sh; unzipping
 ```
+![Screenshot of soal3c.sh](https://i.postimg.cc/KcCSkwKz/Screenshot-365.png)
 
 >>>>>>> main
