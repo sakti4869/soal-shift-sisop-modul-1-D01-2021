@@ -1,7 +1,7 @@
 # soal-shift-sisop-modul-1-D01-2021 #
 - [Daftar Isi]
    - [Anggota Kelompok]
-   - [soal-1] (#soal-1 "Go to soal 1")
+   - [soal-1] (https://github.com/sakti4869/soal-shift-sisop-modul-1-D01-2021/blob/main/README.md#soal-1 "Go to soal 1")
       - [1a]
       - [1b]
       - [1c]
