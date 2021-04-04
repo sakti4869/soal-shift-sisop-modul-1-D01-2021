@@ -146,87 +146,57 @@ Tiap tahunnya, TokoShiSop mengadakan Rapat Kerja yang membahas bagaimana hasil p
 
 ![Soal2a](https://i.postimg.cc/J0RcyT5h/2-a.png)
 
-Pertama kita simpan semua ID transaksi beserta dengan profit percentagenya masing - masing kemudian kita urutkan dari transaksi yang memiliki profit percentage yang paling besar.
-```
-profitlist=`awk -F '	' 'NR > 1 { print $1, ($21 / ($18 - $21)) * 100 }' Laporan-TokoShiSop.tsv | sort -k 2 -n -r`
-```
-Kemudian kita ambil baris pertama dari variabel profitlist yang berisi ID transaksi dan profit percentage yang paling besar.
-```
-profitline1=`echo "$profitlist" | grep "" -m 1`
-```
-Setelah itu, kita simpan row ID dan profit percentagenya ke dalam variabel rowid dan profitpercent.
-```
-rowid=`echo "$profitline1" | cut -d ' ' -f 1`
-profitpercent=`echo "$profitline1" | cut -d ' ' -f 2`
-```
+### Cara pengerjaan ###
+
+1. Menyimpan semua ID transaksi beserta dengan profit percentagenya masing - masing kemudian kita urutkan dari transaksi yang memiliki profit percentage yang paling besar.
+2. Kemudian mengambil baris pertama dari variabel profitlist yang berisi ID transaksi dan profit percentage yang paling besar.
+3. Setelah itu, simpan row ID dan profit percentagenya ke dalam variabel rowid dan profitpercent.
+
+### Kendala ###
+
+Tidak ada kendala.
 
 **b.** Clemong memiliki rencana promosi di Albuquerque menggunakan metode MLM. Oleh karena itu, Clemong membutuhkan daftar **nama *customer* pada transaksi tahun 2017 di Albuquerque**.
 
 ![Soal2b](https://i.postimg.cc/5yp58wsS/2-b.png)
 
-Untuk mencari nama - nama customer yang berasal dari kota Albuquerque dan melakukan transaksi pada tahun 2017, kita dapat mengeksekusi perintah:
-```
-namacustomer=`awk -F '	' '/2017/ && NR > 1 && $10 == "Albuquerque" { print $7 }' Laporan-TokoShiSop.tsv | sort | uniq`
-```
-Nama - nama customer yang berasal dari Albuquerque diurutkan, dihapus jika ada duplikatnya, dan disimpan dalam variabel namacustomer.
+### Cara pengerjaan ###
+
+1. Menggunakan awk untuk mencari semua baris yang memiliki 2017 dan kolom 10 (kolom kota) isinya "Albuquerque". Kemudian hasilnya diurutkan dan dihilangkan duplikatnya.
+
+### Kendala ###
+
+Tidak ada kendala.
 
 **c.** TokoShiSop berfokus tiga _segment customer_, antara lain: _Home Office_, _Customer_, dan _Corporate_. Clemong ingin meningkatkan penjualan pada segmen _customer_ yang paling sedikit. Oleh karena itu, Clemong membutuhkan **segment _customer_** dan **jumlah transaksinya yang paling sedikit**.
 
 ![Soal2c](https://i.postimg.cc/5N7q0SYx/2-c.png)
 
-Untuk mencari semua segmen yang ada, kita dapat menjalankan perintah:
-```
-segmenlist=`awk -F '	' 'NR > 1 { print $8 }' Laporan-TokoShiSop.tsv | sort | uniq`
-```
+### Cara pengerjaan ###
 
-Setelah itu, untuk mencari segmen yang memiliki jumlah transaksi paling sedikit, kita menjalankan perintah - perintah berikut:
-```
-tipesegmen=""
-totaltransaksi=10000
+1. Mencari semua segmen yang ada dengan menjalankan perintah awk pada file Laporan-TokoShiSop.tsv dan hanya mengambil kolom ke-8. Setelah itu hasilnya diurutkan dan dihilangkan duplikatnya.
+2. Menginisialisasi variabel tipesegmen untuk menyimpan nama segmen dengan total transaksi paling sedikit dan variabel totaltransaksi dengan nilai yang besar.
+3. Mengecek jumlah kemunculan tiap segmen pada file Laporan-TokoShiSop.tsv dengan menggunakan grep -c.
+4. Membandingkan jika total transaksi sekarang lebih sedikit dari total transaksi sebelumnya. Jika lebih sedikit maka ubah isi variabel tipesegmen menjadi segmen sekarang yang sedang dicek dan mengubah isi variabel totaltransaksi menjadi jumlah transaksi untuk segmen sekarang.
 
-while read line
-do
-	# Cek total transaksi untuk segmen
-	total=`cat Laporan-TokoShiSop.tsv | grep -c "$line"`
+### Kendala ###
 
-	# Jika total transaksi segmen ini lebih sedikit dari yang sebelumnya, update jumlah transaksi paling sedikit
-	if [ $total -lt $totaltransaksi ]
-	then
-		totaltransaksi=$total
-		tipesegmen=$line # Simpan nama segmennya
-	fi
-done <<< `echo "$segmenlist"`
-```
-Total digunakan untuk menyimpan jumlah transaksi dari tiap segmen. Setelah itu variabel total dibandingkan dengan variabel totaltransaksi untuk mencari jumlah transaksi yang paling sedikit.
-Variabel tipesegmen digunakan untuk menyimpan nama dari segmen dengan jumlah transaksi paling sedikit, dan variabel totaltransaksi digunakan untuk menyimpan jumlah transaksi pada segmen tersebut.
+Kendala mirip seperti no 1.B.
 
 **d.** TokoShiSop membagi wilayah bagian (_region_) penjualan menjadi empat bagian, antara lain: _Central_, _East_, _South_, dan _West_. Manis ingin mencari **wilayah bagian (region) yang memiliki total keuntungan (profit) paling sedikit** dan **total keuntungan wilayah tersebut**.
 
 ![Soal2d](https://i.postimg.cc/FssVNBKW/2-d.png)
 
-Pertama kita menyimpan nama setiap region dengan menjalankan perintah:
-```
-listregion=`awk -F '	' 'NR > 1 { print $13 }' Laporan-TokoShiSop.tsv | sort | uniq`
-```
+### Cara pengerjaan ###
 
-Lalu kita jumlahkan semua profit untuk transaksi pada region tersebut dengan mengeksekusi perintah - perintah berikut:
-```
-regionkeuntungan='' # Untuk menyimpan nama region dengan total profit paling sedikit
-totalkeuntungan=1000000 # Untuk menyimpan total profit yang paling sedikit
+1. Menyimpan nama setiap region dengan menjalankan awk pada file Laporan-TokoShiSop.tsv dan hanya mengambil kolom ke-13. Setelah itu hasilnya diurutkan dan dihilangkan duplikatnya.
+2. Menginisialisasi variabel regionkeuntungan untuk menyimpan nama region dengan keuntungan terkecil dan variabel totalkeuntungan dengan nilai yang besar.
+3. Mengambil semua transaksi pada region yang sedang dicek. Kemudian hasilnya dipipe ke awk dan total profit (kolom ke-21) dari tiap transaksi ditambahkan ke dalam variabel totalprofit. Setelah semua baris diproses, hasilnya dapat disimpan ke dalam variabel profitregion.
+4. Membandingkan jika nilai profitregion lebih kecil dari nilai variabel totalkeuntungan. Jika lebih kecil maka isi variabel regionkeuntungan diubah menjadi nama dari region yang sekarang sedang dicek dan nilai variabel totalkeuntungan diubah menjadi nilai dari variabel profitregion.
 
-while read line
-do
-	# Mencari total profit dari semua transaksi pada suatu region
-	profitregion=`grep "$line" Laporan-TokoShiSop.tsv | awk -F '	' '{totalprofit+=$21} END {print totalprofit}'`
+### Kendala ###
 
-	# Jika profitregion kurang dari totalkeuntungan, perbarui totalkeuntungan dan nama region
-	if [ $profitregion -lt $totalkeuntungan ]
-	then
-		regionkeuntungan="$line"
-		totalkeuntungan="$profitregion"
-	fi
-done <<< `printf "$listregion"`
-```
+Kendala mirip seperti no 1.B.
 
 Agar mudah dibaca oleh Manis, Clemong, dan Steven,
 
@@ -246,14 +216,17 @@ Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedi
 
 ![Soal2e](https://i.postimg.cc/tRzz0j9n/2-e.png)
 
-Untuk menyimpan semua informasi yang sudah diperoleh, kita dapat menjalankan perintah - perintah berikut:
-```
-printf "Transaksi terakhir dengan profit percentage terbesar yaitu $rowid dengan persentase $profitpercent%%\n\n" > hasil.txt
-printf "Daftar nama customer di Albuquerque pada tahun 2017 antara lain:\n" >> hasil.txt
-printf "$namacustomer\n" >> hasil.txt
-printf "\nTipe segmen customer yang penjualannya paling sedikit adalah $tipesegmen dengan $totaltransaksi transaksi.\n\n" >> hasil.txt
-printf "Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedikit adalah $namaregion dengan total keuntungan $totalkeuntungan\n" >> hasil.txt
-```
+### Cara pengerjaan ###
+
+1. Melakukan printf dengan isi teks "Transaksi terakhir dengan profit percentage terbesar yaitu $rowid dengan persentase $profitpercent%%\n\n" lalu dimasukkan ke dalam file hasil.txt. Variabel rowid dan profitpercent diambil dari no 2.A.
+2. Melakukan printf dengan isi teks "Daftar nama customer di Albuquerque pada tahun 2017 antara lain:\n".
+3. Mengappend list nama - nama customer yang disimpan pada variabel namacustomer dari no 2.B ke dalam file hasil.txt.
+4. Mengappend teks "\nTipe segmen customer yang penjualannya paling sedikit adalah $tipesegmen dengan $totaltransaksi transaksi.\n\n" ke dalam file hasil.txt. Variabel tipesegmen dan totaltransaksi diambil dari no 2.C.
+5. Terakhir mengappend teks "Wilayah bagian (region) yang memiliki total keuntungan (profit) yang paling sedikit adalah $namaregion dengan total keuntungan $totalkeuntungan\n" ke dalam file hasil.txt. Variabel namaregion dan totalkeuntungan diambil dari no 2.D.
+
+### Kendala ###
+
+Tidak ada kendala.
 
 ## Soal 3
 Kuuhaku adalah orang yang sangat suka mengoleksi foto-foto digital, namun Kuuhaku juga merupakan seorang yang pemalas sehingga ia tidak ingin repot-repot mencari foto, selain itu ia juga seorang pemalu, sehingga ia tidak ingin ada orang yang melihat koleksinya tersebut, sayangnya ia memiliki teman bernama Steven yang memiliki rasa kepo yang luar biasa. Kuuhaku pun memiliki ide agar Steven tidak bisa melihat koleksinya, serta untuk mempermudah hidupnya, yaitu dengan meminta bantuan kalian. Idenya adalah :
