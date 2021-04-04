@@ -375,6 +375,7 @@ Kemudian, karena kita harus meng-otomatis-kan pengunduhan file kucing dan kelinc
 Maka fungsi akan tereksekusi tiap pukul 00:00, untuk ```bunny``` pada tanggal ganjil, dan untuk ```kitten``` pada tanggal genap.
 
 **REVISI**
+
 Pada implementasi kode diatas file foto tersimpan dengan nama "kitten" untuk foto kucing dan "bunny" untuk foto kelinci. Dan juga, saat dilakukan pengunduhan foto lebih dari satu kali pada tanggal yang sama, file foto akan dinamai kitten.1, kitten.2, dan seterusnya, dan juga tidak bisa dilihat sebagai foto. Untuk memperbaiki hal ini, kita tambahkan perintah penamaan pada file yang diunduh oleh ```wget```. File akan dinamai berdasarkan jenis foto, tanggal dan jam pengunduhan dengan format ```Kucing_tanggal-bulan-tahun_jam:menit:detik```. Berikut adalah skripnya.
 ```
 wget -O $(date "+ Kelinci_%d-%m-%Y_%H:%M:%S") https://loremflickr.com/320/240/bunny
@@ -420,6 +421,8 @@ Hasil dari proses adalah "Koleksi.zip" yang berada di direktori ```/home/[userna
 current=$(date "+%d%m%Y")
 zip -P $current -r Koleksi.zip Koleksi/
 ```
+
+![Screenshot of soal3c.sh](https://i.postimg.cc/W1dmJqg0/Screenshot-364.png)
 
 e. Karena kuuhaku hanya bertemu Steven pada saat kuliah saja, yaitu setiap hari kecuali sabtu dan minggu, dari jam 7 pagi sampai 6 sore, ia memintamu untuk membuat koleksinya ter-zip saat kuliah saja, selain dari waktu yang disebutkan, ia ingin koleksinya ter-unzip dan tidak ada file zip sama sekali.
 
